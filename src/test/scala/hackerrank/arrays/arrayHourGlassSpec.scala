@@ -27,18 +27,6 @@ class ArrayHourGlassSpec extends Specification {
     }
   }
 
-  "sumSingleHourGlass" >> {
-    "it should return sum total of an hour glass" >> {
-      val input =
-        Array(
-          Array(1, 1, 1),
-          Array(1, 1, 1),
-          Array(1, 1, 1)
-        )
-      ArrayHourGlass.sumSingleHourGlass(input) must beEqualTo(7)
-    }
-  }
-
   "hourglassSum" >> {
     "it should return max of all hour glasses in a simple case" >> {
       val input =

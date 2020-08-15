@@ -14,6 +14,7 @@ import scala.collection.immutable._
 // https://www.hackerrank.com/challenges/crush/problem
 object ArrayManipulation {
 
+  // pretty much copied from the cats library for monoid instance
   def combine(xs: SortedMap[Int, Long], ys: SortedMap[Int, Long]): SortedMap[Int, Long] = {
     if (xs.size <= ys.size) {
       xs.foldLeft(ys) {
@@ -36,7 +37,6 @@ object ArrayManipulation {
     }
   }
 
-  // Complete the arrayManipulation function below.
   def arrayManipulation(n: Int, queries: Array[Array[Int]]): Long = {
     flatten(n, queries).foldLeft((0L, 0L)) {
       case ((maxS, s), (_, v)) => {

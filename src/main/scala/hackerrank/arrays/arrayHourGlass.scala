@@ -13,16 +13,13 @@ import java.util.stream._
 // https://www.hackerrank.com/challenges/2d-array
 object ArrayHourGlass {
 
-  def hourglassSum(arr: Array[Array[Int]]): Int = {
-    var maxHourGlassSum = 0
-    for (r <- 0 to 3) {
-      for (c <- 0 to 3) {
-        val currSum = calcHourGlassSum(r, c, arr)
-        if (currSum > maxHourGlassSum) maxHourGlassSum = currSum
-      }
-    }
-    maxHourGlassSum
-  }
+  def hourglassSum(arr: Array[Array[Int]]): Int =
+    (
+      for (
+        r <- 0 to 3;
+        c <- 0 to 3
+      ) yield (calcHourGlassSum(r, c, arr))
+    ).max
 
   def calcHourGlassSum(rowOffset: Int, colOffSet: Int, arr: Array[Array[Int]]): Int = {
     arr(rowOffset + 0)(colOffSet + 0) +
@@ -32,41 +29,6 @@ object ArrayHourGlass {
       arr(rowOffset + 2)(colOffSet + 0) +
       arr(rowOffset + 2)(colOffSet + 1) +
       arr(rowOffset + 2)(colOffSet + 2)
-  }
-
-  def hourglassSumOldv1(arr: Array[Array[Int]]): Int = {
-    arr
-      .map(_.sliding(3).toArray)
-      .transpose
-      .map(_.sliding(3).toArray)
-      .flatten
-      .map(sumSingleHourGlass(_))
-      .max
-  }
-
-  def hourglassSumOld(arr: Array[Array[Int]]): Int = {
-    (0 to 3)
-      .foldLeft(Array.emptyIntArray)((sum, r) => {
-        val row0 = arr(r).sliding(3).toArray
-        val row1 = arr(r + 1).sliding(3).toArray
-        val row2 = arr(r + 2).sliding(3).toArray
-
-        val groupMax = (0 to 3)
-          .foldLeft(Array.emptyIntArray)((subSum, i) => {
-            subSum :+ sumSingleHourGlass(Array(row0(i), row1(i), row2(i)))
-          })
-          .max
-        sum :+ groupMax
-      })
-      .max
-  }
-
-  def sumSingleHourGlass(arr: Array[Array[Int]]): Int = {
-    arr.flatten.zipWithIndex.foldLeft(0)((sum, i) => {
-      val value = i._1
-      val index = i._2
-      sum + (if (index == 3 || index == 5) 0 else value)
-    })
   }
 
   def main(args: Array[String]) {

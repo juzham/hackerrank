@@ -24,10 +24,10 @@ import scala.reflect._
 
 // https://www.hackerrank.com/challenges/count-triplets-1
 
-case class State(singles: Map[Long, Long])
+case class State(singles: Map[Long, Long], pairs: Map[(Long, Long), Long])
 object CountTriplets {
 
-   def factorial(n: Long, result: BigInt = 1): BigInt = {
+  def factorial(n: Long, result: BigInt = 1): BigInt = {
     if (n == 0)
       result
     else
@@ -43,7 +43,7 @@ object CountTriplets {
       case Some(value) => value + 1
       case None        => 1
     }
-    State(state.singles + (key -> newValue))
+    State(state.singles + (key -> newValue), state.pairs)
   }
 
   def countTriplet(state: State, value: Long, r: Long): Long = {
@@ -52,9 +52,9 @@ object CountTriplets {
     state.singles.get(iR1) match {
       case Some(i1) =>
         if (r == 1)
-          if(i1 > 1)
+          if (i1 > 1)
             choose(i1, 2).toLong
-            else
+          else
             0
         else {
           state.singles.get(iR2) match {
@@ -66,10 +66,9 @@ object CountTriplets {
     }
   }
 
-  
   // Complete the countTriplets function below.
   def countTriplets(arr: Array[Long], r: Long): Long = {
-    val init = (0L, State(Map.empty[Long, Long]))
+    val init = (0L, State(Map.empty, Map.empty))
     arr.reverse
       .foldLeft(init) {
         case ((sumTriplets, state), i) =>

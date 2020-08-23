@@ -5,42 +5,42 @@ import org.specs2.mutable.Specification
 class CountTripletsSpec extends Specification {
   "countTriplet" >> {
     "should a triplet when it exists" >> {
-      val state = State(Map(2L -> 1L, 4L -> 1L))
+      val state = State(Map(2L -> 1L, 4L -> 1L), Map.empty)
       val value = 1L
       val ratio = 2L
       CountTriplets.countTriplet(state, value, ratio) must beEqualTo(1)
     }
 
     "should return 0 if triplet doesn't exit" >> {
-      val state = State(Map(2L -> 1L, 4L -> 1L))
+      val state = State(Map(2L -> 1L, 4L -> 1L), Map.empty)
       val value = 1L
       val ratio = 10L
       CountTriplets.countTriplet(state, value, ratio) must beEqualTo(0)
     }
 
     "should count multiple triplets" >> {
-      val state = State(Map(2L -> 2L, 4L -> 2L))
+      val state = State(Map(2L -> 2L, 4L -> 2L), Map.empty)
       val value = 1L
       val ratio = 2L
       CountTriplets.countTriplet(state, value, ratio) must beEqualTo(4)
     }
 
     "should count ratio of 1 correctly" >> {
-      val state = State(Map(1L -> 2L))
+      val state = State(Map(1L -> 2L), Map.empty)
       val value = 1L
       val ratio = 1L
       CountTriplets.countTriplet(state, value, ratio) must beEqualTo(1)
     }
 
     "should count ratio of 1 len 3 correctly" >> {
-      val state = State(Map(1L -> 3L))
+      val state = State(Map(1L -> 3L), Map.empty)
       val value = 1L
       val ratio = 1L
       CountTriplets.countTriplet(state, value, ratio) must beEqualTo(3)
     }
 
     "should count ratio of 1 len 4 correctly" >> {
-      val state = State(Map(1L -> 4L))
+      val state = State(Map(1L -> 4L), Map.empty)
       val value = 1L
       val ratio = 1L
       CountTriplets.countTriplet(state, value, ratio) must beEqualTo(6)
@@ -49,16 +49,16 @@ class CountTripletsSpec extends Specification {
 
   "incState" >> {
     "should update an exiting key" >> {
-      val state = State(Map(1L -> 1L, 2L -> 1L))
+      val state = State(Map(1L -> 1L, 2L -> 1L), Map.empty)
       val key = 1L
-      val expectedState = State(Map(1L -> 2L, 2L -> 1L))
+      val expectedState = State(Map(1L -> 2L, 2L -> 1L), Map.empty)
       CountTriplets.incState(state, key) must beEqualTo(expectedState)
     }
 
     "should add a new key if none exists" >> {
-      val state = State(Map(2L -> 1L))
+      val state = State(Map(2L -> 1L), Map.empty)
       val key = 1L
-      val expectedState = State(Map(1L -> 1L, 2L -> 1L))
+      val expectedState = State(Map(1L -> 1L, 2L -> 1L), Map.empty)
       CountTriplets.incState(state, key) must beEqualTo(expectedState)
     }
   }

@@ -25,45 +25,54 @@ import scala.reflect._
 // https://www.hackerrank.com/challenges/count-triplets-1
 object CountTriplets {
 
-  def toMapIndex(arr: Array[Long]): Map[Long, List[Int]] = {
-    val init = Map.empty[Long, List[Int]]
-    arr.zipWithIndex
-      .foldLeft(init) {
-        case ((m, (v, i))) => {
-          val newIs = m.get(v) match {
-            case Some(is) => is :+ i
-            case None     => List(i)
-          }
-          m + (v -> newIs)
-        }
-      }
+   def factorial(n: Long, result: BigInt = 1): BigInt = {
+    if (n == 0)
+      result
+    else
+      factorial(n - 1, result * n)
   }
+
+  def choose(n: Long, k: Int): BigInt = {
+    factorial(n) / (factorial(k) * factorial(n - k))
+  }
+
+  def incState(state: Map[Long, Long], key: Long): Map[Long, Long] = {
+    val newValue = state.get(key) match {
+      case Some(value) => value + 1
+      case None        => 1
+    }
+    state + (key -> newValue)
+  }
+
+  def countTriplet(state: Map[Long, Long], value: Long, r: Long): Long = {
+    val iR1 = value * r
+    val iR2 = iR1 * r
+    state.get(iR1) match {
+      case Some(i1) =>
+        if (r == 1)
+          if(i1 > 1)
+            choose(i1, 2).toLong
+            else
+            0
+        else {
+          state.get(iR2) match {
+            case Some(i2) => i1 * i2
+            case None     => 0
+          }
+        }
+      case None => 0
+    }
+  }
+
   // Complete the countTriplets function below.
   def countTriplets(arr: Array[Long], r: Long): Long = {
-    val lookup = toMapIndex(arr)
-    def loop(value: Long, valueIndex: Int, toFind: Int): Int = {
-      if (toFind == 0)
-        1
-      else {
-        val nextValue = value * r
-        val maybeNextIs = lookup.get(nextValue)
-        maybeNextIs match {
-          case Some(nextIs) =>
-            nextIs
-              .map(nextI =>
-                if (nextI > valueIndex)
-                  loop(nextValue, nextI, toFind - 1)
-                else
-                  0
-              )
-              .sum
-          case None => 0
-        }
+    val init = (0L, Map.empty[Long, Long])
+    arr.reverse
+      .foldLeft(init) {
+        case ((sumTriplets, state), i) =>
+          (sumTriplets + countTriplet(state, i, r), incState(state, i))
       }
-    }
-    arr.zipWithIndex.map { case (v, i) =>
-      loop(v, i, 2)
-    }.sum
+      ._1
   }
 
   def main(args: Array[String]) {

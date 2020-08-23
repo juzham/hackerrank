@@ -23,6 +23,8 @@ import scala.util.matching._
 import scala.reflect._
 
 // https://www.hackerrank.com/challenges/count-triplets-1
+
+case class State(singles: Map[Long, Long])
 object CountTriplets {
 
    def factorial(n: Long, result: BigInt = 1): BigInt = {
@@ -36,18 +38,18 @@ object CountTriplets {
     factorial(n) / (factorial(k) * factorial(n - k))
   }
 
-  def incState(state: Map[Long, Long], key: Long): Map[Long, Long] = {
-    val newValue = state.get(key) match {
+  def incState(state: State, key: Long): State = {
+    val newValue = state.singles.get(key) match {
       case Some(value) => value + 1
       case None        => 1
     }
-    state + (key -> newValue)
+    State(state.singles + (key -> newValue))
   }
 
-  def countTriplet(state: Map[Long, Long], value: Long, r: Long): Long = {
+  def countTriplet(state: State, value: Long, r: Long): Long = {
     val iR1 = value * r
     val iR2 = iR1 * r
-    state.get(iR1) match {
+    state.singles.get(iR1) match {
       case Some(i1) =>
         if (r == 1)
           if(i1 > 1)
@@ -55,7 +57,7 @@ object CountTriplets {
             else
             0
         else {
-          state.get(iR2) match {
+          state.singles.get(iR2) match {
             case Some(i2) => i1 * i2
             case None     => 0
           }
@@ -64,9 +66,10 @@ object CountTriplets {
     }
   }
 
+  
   // Complete the countTriplets function below.
   def countTriplets(arr: Array[Long], r: Long): Long = {
-    val init = (0L, Map.empty[Long, Long])
+    val init = (0L, State(Map.empty[Long, Long]))
     arr.reverse
       .foldLeft(init) {
         case ((sumTriplets, state), i) =>

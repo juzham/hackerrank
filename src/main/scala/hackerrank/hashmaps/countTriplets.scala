@@ -38,12 +38,20 @@ object CountTriplets {
     factorial(n) / (factorial(k) * factorial(n - k))
   }
 
-  def incState(state: State, key: Long): State = {
-    val newValue = state.singles.get(key) match {
+  def incState(state: State, key: Long, r: Long): State = {
+    val keyRatio = key * r
+
+    val newSingleValue = state.singles.get(key) match {
       case Some(value) => value + 1
       case None        => 1
     }
-    State(state.singles + (key -> newValue), state.pairs)
+
+    val newPair = state.singles.get(keyRatio) match {
+      case Some(ratioValue) => Map((key, keyRatio) -> newSingleValue * ratioValue)
+      case None             => Map.empty[(Long, Long), Long]
+    }
+
+    State(state.singles + (key -> newSingleValue), state.pairs ++ newPair)
   }
 
   def countTriplet(state: State, value: Long, r: Long): Long = {
@@ -72,7 +80,7 @@ object CountTriplets {
     arr.reverse
       .foldLeft(init) {
         case ((sumTriplets, state), i) =>
-          (sumTriplets + countTriplet(state, i, r), incState(state, i))
+          (sumTriplets + countTriplet(state, i, r), incState(state, i, r))
       }
       ._1
   }

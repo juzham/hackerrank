@@ -49,17 +49,19 @@ class CountTripletsSpec extends Specification {
 
   "incState" >> {
     "should update an exiting key" >> {
-      val state = State(Map(1L -> 1L, 2L -> 1L), Map.empty)
+      val state = State(Map(1L -> 1L, 2L -> 1L), Map((1L, 2L) -> 1L))
       val key = 1L
-      val expectedState = State(Map(1L -> 2L, 2L -> 1L), Map.empty)
-      CountTriplets.incState(state, key) must beEqualTo(expectedState)
+      val r = 2L
+      val expectedState = State(Map(1L -> 2L, 2L -> 1L), Map((1L, 2L) -> 2L))
+      CountTriplets.incState(state, key, r) must beEqualTo(expectedState)
     }
 
     "should add a new key if none exists" >> {
       val state = State(Map(2L -> 1L), Map.empty)
       val key = 1L
-      val expectedState = State(Map(1L -> 1L, 2L -> 1L), Map.empty)
-      CountTriplets.incState(state, key) must beEqualTo(expectedState)
+      val r = 2L
+      val expectedState = State(Map(1L -> 1L, 2L -> 1L), Map((1L,2L) -> 1L))
+      CountTriplets.incState(state, key, r) must beEqualTo(expectedState)
     }
   }
 
